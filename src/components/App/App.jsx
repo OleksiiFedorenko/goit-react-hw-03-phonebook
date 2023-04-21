@@ -8,6 +8,8 @@ import Filter from 'components/Filter/Filter';
 import ContactList from 'components/ContactList/ContactList';
 import NoContacts from 'components/NoContacts/NoContacts';
 
+const LSKey = 'contact-list';
+
 class App extends Component {
   state = {
     contacts: [
@@ -18,6 +20,22 @@ class App extends Component {
     ],
     filter: '',
   };
+
+  componentDidMount() {
+    const savedContacts = localStorage.getItem(LSKey);
+    if (savedContacts) {
+      const contacts = JSON.parse(savedContacts);
+      this.setState({ contacts });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    const { contacts } = this.state;
+
+    if (prevState.contacts !== contacts) {
+      localStorage.setItem(LSKey, JSON.stringify(contacts));
+    }
+  }
 
   addContact = contactObj => {
     const { name, number } = contactObj;
